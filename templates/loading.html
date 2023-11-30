@@ -1,0 +1,57 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <style>
+        .page {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; 
+        }
+
+        #spinner {
+            animation: spin 2s linear infinite; 
+            color: #1DB954;
+        }
+
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .spinner i {
+            font-size: 8em; 
+        }
+
+        .loading-text {
+            margin-top: 20px; 
+            font-size: 1.5em;
+            opacity: 1; 
+            animation: fade 3s linear infinite;
+        }
+
+        @keyframes fade {
+            0%, 100% {
+                opacity: 0;
+            }
+            50% {
+                opacity: 1; 
+            }
+        }
+    </style>
+
+    <div class="page">
+        <div class="spinner" id="spinner">
+            <i class="fa fa-spinner fa-spin"></i>
+        </div>
+        <p class="loading-text">Generating Lyrics</p>
+    </div>
+
+    <script>
+        window.location.replace('/generated?lyrics={{ lyrics }}');
+    </script>
+    <div hidden name="lyrics" value="{{ lyrics }}"></div>
+{% endblock %}
