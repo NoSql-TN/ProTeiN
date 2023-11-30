@@ -1,4 +1,4 @@
-# Projet NoSQL
+# Projet NoSQL 2023
 
 ### Guide d'installation rapide pour l'application web :
 ```bash
