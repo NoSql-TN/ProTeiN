@@ -1,4 +1,23 @@
 {% extends 'layout.html' %}
 
 {% block content %}
+
+<div class="titre-header">
+    <h1>ProTeiN</h1>
+</div>
+<div class="search-bar-container">
+    <form action="/search" method="post">
+        <input type="text" name="proteinentry" placeholder="Input a protein entry..." class="search-bar">
+        <input type="int" name="minweight" placeholder="Min weight" class="min-weight" min="0" max="1">
+        <button type="submit" class="btn-search">Search</button>
+    </form>
+</div>
+<div class="annotation-container">
+    <form action="/annotation" method="post">
+        <input type="text" name="annotation" placeholder="Input the protein ID..." class="annotation-bar">
+        <input type="int" name="threshold" placeholder="Threshold" class="threshold" min="0" max="1">
+        <input type="int" name="maxGOturns" placeholder="Max GO turns" class="maxGOturns">
+        <button type="submit" class="btn-annotate">Annotation</button>
+    </form>
+</div>
 {% endblock %}

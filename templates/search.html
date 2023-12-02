@@ -1,0 +1,16 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+<link rel="stylesheet" href="../static/styles/search.css">
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="../static/javascript/search_graph.js"></script>
+<script>
+    function draw(){
+        fetchDataAndDraw("{{proteinid}}", "{{minweight}}");
+    }
+</script>
+
+<body onload="draw()">
+</body>
+{% endblock %}

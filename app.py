@@ -11,6 +11,9 @@ def create_app() -> Flask:
     from python.blueprints.mainBP import mainBP
     app.register_blueprint(mainBP)
     
+    from python.blueprints.searchBP import searchBP
+    app.register_blueprint(searchBP)
+    
     @app.route('/favicon.ico')
     def favicon():
         return send_from_directory(os.path.join(app.root_path, 'static'),
@@ -29,3 +32,4 @@ def create_app() -> Flask:
 if __name__ == "__main__":
     app = create_app()
     app.run(debug=1, host='0.0.0.0', port=5454)
+

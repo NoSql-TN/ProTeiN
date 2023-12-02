@@ -1,0 +1,7 @@
+.visualitation{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.5);
+    border: -1px solid #000;
+}
