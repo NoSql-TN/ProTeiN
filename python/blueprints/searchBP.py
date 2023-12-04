@@ -9,7 +9,6 @@ searchBP = Blueprint('searchBP', __name__)
 @searchBP.route("/search", methods=["POST", "GET"])
 def search():
     if request.method == "POST":
-        print(request.form)
         proteinid = request.form["proteinentry"]
         minweight = request.form["minweight"]
         maxweight = request.form["maxweight"]
@@ -21,7 +20,6 @@ def search():
         maxweight = args.get("maxWeight")
         maxNeighborDepth = args.get("maxNeighborDepth")
         numberOfNodes = args.get("numberOfNodes")
-        print(proteinid, minweight)
         return render_template("search.html", proteinid=proteinid, minweight=minweight, maxweight=maxweight ,maxNeighborDepth=maxNeighborDepth, numberOfNodes=numberOfNodes)
     else:
         return render_template("search.html")
@@ -34,16 +32,18 @@ def fetch_data(protein_id, min_weight, max_weight, max_neighbor_depth, number_of
     
     nodes = []
     relationships = []
-    
+    count = 0
     # Get the id of the searched protein
     for node in graph.nodes:
+        count += 1
         if node["Proteinid"] == protein_id:
             session['proteinid'] = node.id
     
+    print(count)
+    
     # Create the data to return
     for node in graph.nodes:
-        nodes.append({"id": node.id, "label": next(iter(node.labels)), "title": node["Proteinid"], "group": compute_group(node.id, graph.relationships), "start": node["sequence"][0:10], "end": node["sequence"][-10:], "organism": node["organism"], "interpro": node["interPro"]})
-    
+        nodes.append({"id": node.id, "label": next(iter(node.labels)), "title": node["Proteinid"], "group": compute_group(node.id, graph.relationships), "start": node["sequence"][0:10], "end": node["sequence"][-10:], "organism": node["organism"], "interpro": node["interPro"], "ec": node["EC_number"]})    
     for rel in graph.relationships:
         if float(rel["jaccardID"]) != 0:
             relationships.append({"source": rel.start_node.id, "target": rel.end_node.id, "label": rel.type, "title": rel["jaccardID"], "value": rel["jaccardID"]})
@@ -133,9 +133,9 @@ def generate_query(protein_id, min_weight, max_weight, max_neighbor_depth, numbe
     query += " AND p1.Proteinid <> p2.Proteinid"
     for i in range(1, int(max_neighbor_depth)):
         query += f" AND p{i+1}.Proteinid <> p{i+2}.Proteinid"
-    query += " RETURN p ORDER BY r.jaccardID"
+    query += " RETURN p ORDER BY r.jaccardID DESC"
     for i in range(1, int(max_neighbor_depth)):
-        query += f", r{i}.jaccardID"    
+        query += f", r{i}.jaccardID DESC"   
     query += f" LIMIT {number_of_nodes}"
         
     return query

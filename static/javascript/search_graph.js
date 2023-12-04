@@ -66,7 +66,7 @@ function updateGraph(data, minWeight, maxWeight,maxNeighborDepth, numberOfNodes)
 	// Add a line for each link, and a circle for each node.
 	const link = svg.append("g")
 		.attr("stroke", "#aaa")
-		.attr("stroke-opacity", 1)
+		.attr("stroke-opacity", 0.5)
 		.selectAll("line")
 		.data(links)
 		.join("line")
@@ -82,7 +82,7 @@ function updateGraph(data, minWeight, maxWeight,maxNeighborDepth, numberOfNodes)
 		.data(nodes)
 		.join("circle")
 		.attr("r", 5)
-		.attr("fill", (d) => colorPalette[Math.round((colorPalette.length - 1)/(maxNeighborDepth+1) * d.group)])
+		.attr("fill", (d) => colorPalette[Math.round(((colorPalette.length - 1)/(maxNeighborDepth+1)) * d.group)])
 
 	node.append("title")
 		.text(d => d.title);
@@ -125,13 +125,13 @@ function updateGraph(data, minWeight, maxWeight,maxNeighborDepth, numberOfNodes)
 	function dragended(event) {
 		if (!event.active) simulation.alphaTarget(0);
 		if (event.sourceEvent.shiftKey) {
-			console.log(event.subject.id);
 			window.location.href = `/search?proteinId=${event.subject.title}&minWeight=${minWeight}&maxNeighborDepth=${maxNeighborDepth}&maxWeight=${maxWeight}&numberOfNodes=${numberOfNodes}`;
 		}
 		document.getElementById("proteinInfo").innerHTML = `<h3>Protein Info :</h3>
 			<p style="padding-top: 10px;"><strong>Entry Name</strong>: ${event.subject.title}</p>
 			<p style="padding-top: 5px;"><strong>Organism</strong>: ${event.subject.organism}</p>
-			<p style="padding-top: 5px;"><strong>InterPro</strong>: ${event.subject.interpro}</p>
+			<p style="padding-top: 5px;"><strong>GO list</strong>: ${event.subject.interpro}</p>
+			<p style="padding-top: 5px;"><strong>EC Number</strong>: ${event.subject.ec}</p>
 			<p style="padding-top: 5px;"><strong>Start of sequence</strong>: ${event.subject.start}</p>
 			<p style="padding-top: 5px;"><strong>End of sequence</strong>: ${event.subject.end}</p>
 			<p style="padding-top: 5px;"><strong>Node ID</strong>: ${event.subject.id}</p>`;
@@ -142,19 +142,17 @@ function updateGraph(data, minWeight, maxWeight,maxNeighborDepth, numberOfNodes)
 	function createLegend() {
 		const legend = document.createElement("div");
 		legend.setAttribute("id", "legend");
-		legend.setAttribute("style", "background-color: white; border-radius: 5px; border: 1px solid black; z-index: 99999999999999999999999; padding: 5px; width: 150px; height: 100px; display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start;");
+		legend.setAttribute("style", "background-color: white; border-radius: 5px; border: 1px solid black; z-index: 99999999999999999999999; padding: 5px; width: 150px; height: auto; display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start;");
 		legend.innerHTML = "<h3 style='padding-bottom: 5px;'>Legend :</h3>";
 		// add color legend to the legend div the first color is the search protein color and the second is the color of the first neighbor and so on
-		console.log(maxNeighborDepth);
 		for (let i = 1; i <= (maxNeighborDepth+1); i++) {
-			console.log(i);
 			const legendItem = document.createElement("div");
 			legendItem.setAttribute("id", `legend-${i}`);
 			// add a circle of the color and the text as explained above
 			if (i == 1) {
-				legendItem.innerHTML = `<svg width="20" height="20"><circle cx="10" cy="10" r="5" fill="${colorPalette[Math.round((colorPalette.length - 1)/(maxNeighborDepth+1) * i)]}"></circle></svg> Searched Protein`;
+				legendItem.innerHTML = `<svg width="20" height="20"><circle cx="10" cy="10" r="5" fill="${colorPalette[Math.round(((colorPalette.length - 1)/(maxNeighborDepth+1)) * i)]}"></circle></svg> Searched Protein`;
 			} else {
-				legendItem.innerHTML = `<svg width="20" height="20"><circle cx="10" cy="10" r="5" fill="${colorPalette[Math.round((colorPalette.length - 1)/(maxNeighborDepth+1) * i)]}"></circle></svg> Neighbor ${i - 1}`;
+				legendItem.innerHTML = `<svg width="20" height="20"><circle cx="10" cy="10" r="5" fill="${colorPalette[Math.round(((colorPalette.length - 1)/(maxNeighborDepth+1)) * i)]}"></circle></svg> Neighbor ${i - 1}`;
 			}
 			legend.appendChild(legendItem);
 		}
@@ -182,8 +180,7 @@ function updateGraph(data, minWeight, maxWeight,maxNeighborDepth, numberOfNodes)
 	leftContainer.appendChild(createLegend());
 	document.body.appendChild(leftContainer);
 
-	console.log(nodes[0]);
-	var nodeInfo = {id: nodes[0].id, title: nodes[0].title, label: nodes[0].label, organism: nodes[0].organism, interpro: nodes[0].interpro, start: nodes[0].start, end: nodes[0].end};
+	var nodeInfo = {id: nodes[0].id, title: nodes[0].title, label: nodes[0].label, organism: nodes[0].organism, interpro: nodes[0].interpro, start: nodes[0].start, end: nodes[0].end, ec: nodes[0].ec};
 	
 	function createProteinInfo() {
 		const proteinInfo = document.createElement("div");
@@ -192,7 +189,8 @@ function updateGraph(data, minWeight, maxWeight,maxNeighborDepth, numberOfNodes)
 		proteinInfo.innerHTML = `<h3>Protein Info :</h3>
 			<p style="padding-top: 10px;"><strong>Entry Name</strong>: ${nodeInfo.title}</p>
 			<p style="padding-top: 5px;"><strong>Organism</strong>: ${nodeInfo.organism}</p>
-			<p style="padding-top: 5px;"><strong>InterPro</strong>: ${nodeInfo.interpro}</p>
+			<p style="padding-top: 5px;"><strong>GO list</strong>: ${nodeInfo.interpro}</p>
+			<p style="padding-top: 5px;"><strong>EC Number</strong>: ${nodeInfo.ec}</p>
 			<p style="padding-top: 5px;"><strong>Start of sequence</strong>: ${nodeInfo.start}</p>
 			<p style="padding-top: 5px;"><strong>End of sequence</strong>: ${nodeInfo.end}</p>
 			<p style="padding-top: 5px;"><strong>Node ID</strong>: ${nodeInfo.id}</p>`;
@@ -233,7 +231,6 @@ function updateGraph(data, minWeight, maxWeight,maxNeighborDepth, numberOfNodes)
 
 // Function to extract nodes from Neo4j response
 function extractNodes(data) {
-	console.log(data.nodes[0].interpro.length);
 	return data.nodes.map(node => {
 		return {
 			id: node.id,
@@ -244,7 +241,8 @@ function extractNodes(data) {
 			// add a cariage return to the interpro string every 4 interpros
 			interpro: node.interpro.slice(0,-1).join(", ").split(", ").map((interpro, index) => (index + 1) % 4 == 0 ? interpro + ",<br>" : interpro + ",").join(" ").slice(0, (node.interpro.length - 1) % 4 == 0 ? -5 : -1),
 			start: node.start,
-			end: node.end
+			end: node.end,
+			ec: node.ec,
 		};
 	});
 }

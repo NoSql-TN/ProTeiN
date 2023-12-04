@@ -10,8 +10,6 @@ function controlFromSlider(fromSlider, toSlider, fromValue, minweight, maxweight
         fromValue.innerHTML = from;
         fromSlider.value = from;
     }
-    console.log(minweight.value);
-    console.log(maxweight.value);
 }
 
 function controlToSlider(fromSlider, toSlider, toValue, minweight, maxweight) {
@@ -27,8 +25,6 @@ function controlToSlider(fromSlider, toSlider, toValue, minweight, maxweight) {
         toSlider.value = from;
         maxweight.value = from;
     }
-    console.log(minweight.value);
-    console.log(maxweight.value);
 }
 
 function getParsed(currentFrom, currentTo) {

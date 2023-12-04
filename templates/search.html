@@ -23,8 +23,8 @@
                 <input style="display: none; width: 0; height: 0;" type="text" name="maxWeight" id="maxWeight" value="{{maxweight}}">
                 <div class="range_container">
                     <div class="sliders_control">
-                        <input id="fromSlider" type="range" value="{{minweight}}" min="0" max="1" step="0.01" oninput="controlFromSlider(fromSlider, toSlider, fromValue, minWeight, maxWeight)"/>
-                        <input id="toSlider" type="range" value="{{maxweight}}" min="0" max="1" step="0.01" oninput=""/>
+                        <input id="fromSlider" type="range" value="{{minweight}}" min="0" max="1" step="0.01" />
+                        <input id="toSlider" type="range" value="{{maxweight}}" min="0" max="1" step="0.01"/>
                     </div>
                     <div class="sliders_values">
                         <p>Weight Value: <span id="fromValue">{{minweight}}</span> - <span id="toValue">{{maxweight}}</span></p>
@@ -33,7 +33,7 @@
                 <p><strong>Number of nodes</strong>: <span id="numberOfNodesValue">{{numberOfNodes}}</span></p>
                 <input type="range" min="10" max="500" value="{{numberOfNodes}}" step="10" id="numberOfNodesSlider" style="margin-bottom: 15px;" name="numberOfNodes">
                 <p style="padding-top: 5px;"><strong>Max neighbor depth</strong>: <span id="maxNeighborDepthValue">{{maxNeighborDepth}}</span></p>
-                <input type="range" min="0" max="6" value="{{maxNeighborDepth}}" step="1" id="maxNeighborDepthSlider" style="margin-bottom: 15px;" name="maxNeighborDepth">
+                <input type="range" min="0" max="2" value="{{maxNeighborDepth}}" step="1" id="maxNeighborDepthSlider" style="margin-bottom: 15px;" name="maxNeighborDepth">
                 <input type="hidden" name="proteinId" value="{{proteinid}}">
                 <input type="submit" value="Search" style="margin: auto; margin-bottom: 15px; width: 100px; height: 30px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">
             </form>`;
@@ -66,8 +66,6 @@
             fromValue.innerHTML = from;
             fromSlider.value = from;
         }
-        console.log(minweight.value);
-        console.log(maxweight.value);
     }
 
     function controlToSlider(fromSlider, toSlider, toValue, minweight, maxweight) {
@@ -83,8 +81,6 @@
             toSlider.value = from;
             maxweight.value = from;
         }
-        console.log(minweight.value);
-        console.log(maxweight.value);
     }
 
     function getParsed(currentFrom, currentTo) {
@@ -120,7 +116,7 @@
     // create the bottom div that contains the sliders
 	bottomContainer = document.createElement("div");
 	bottomContainer.setAttribute("id", "bottomContainer");
-	bottomContainer.setAttribute("style", "position: absolute; bottom: 10px; left: 10px; ");
+	bottomContainer.setAttribute("style", "position: absolute; bottom: 10px; left: 10px;");
 	bottomContainer.appendChild(createSliders());
 	document.body.appendChild(bottomContainer);
 
@@ -128,8 +124,8 @@
     const toSlider = document.querySelector('#toSlider');
     const fromValue = document.querySelector('#fromValue');
     const toValue = document.querySelector('#toValue');
-    const minweight = document.querySelector('#minweight');
-    const maxweight = document.querySelector('#maxweight');
+    const minweight = document.querySelector('#minWeight');
+    const maxweight = document.querySelector('#maxWeight');
     fillSlider(fromSlider, toSlider, '#FFA500', '#0000FF', toSlider);
     setToggleAccessible(toSlider);
     fromSlider.oninput = () => controlFromSlider(fromSlider, toSlider, fromValue, minweight, maxweight);
