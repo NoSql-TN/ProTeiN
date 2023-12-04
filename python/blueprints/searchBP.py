@@ -6,6 +6,11 @@ from neo4j import GraphDatabase
 searchBP = Blueprint('searchBP', __name__)
 
 # Definition of the search route
+@searchBP.route("/stat")
+def stat():
+    return render_template("stat.html")
+
+# Definition of the search route
 @searchBP.route("/search", methods=["POST", "GET"])
 def search():
     if request.method == "POST":

@@ -7,4 +7,4 @@ annotateBP = Blueprint('annotateBP', __name__)
 # Definition of the annotate route
 @annotateBP.route("/annotate")
 def home():
-    return render_template("home.html")
+    return render_template("search.html")
