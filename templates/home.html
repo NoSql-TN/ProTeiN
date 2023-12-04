@@ -1,14 +1,24 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-
+<link rel="stylesheet" href="../static/styles/home.css">
 <div class="titre-header">
     <h1>ProTeiN</h1>
 </div>
 <div class="search-bar-container">
-    <form action="/search" method="post">
+    <form action="/search" method="post" style="display: flex; flex-direction: row; justify-content: center; align-items: center;">
         <input type="text" name="proteinentry" placeholder="Input a protein entry..." class="search-bar">
-        <input type="int" name="minweight" placeholder="Min weight" class="min-weight" min="0" max="1">
+        <input style="display: none; width: 0; height: 0;" type="text" name="minweight" id="minweight" value="0">
+        <input style="display: none; width: 0; height: 0;" type="text" name="maxweight" id="maxweight" value="1">
+        <div class="range_container">
+            <div class="sliders_control">
+                <input id="fromSlider" type="range" value="0" min="0" max="1" step="0.01"/>
+                <input id="toSlider" type="range" value="1" min="0" max="1" step="0.01"/>
+            </div>
+            <div class="sliders_values">
+                <p>Weight Value: <span id="fromValue">0</span> - <span id="toValue">1</span></p>
+            </div>
+        </div>
         <button type="submit" class="btn-search">Search</button>
     </form>
 </div>
@@ -20,4 +30,7 @@
         <button type="submit" class="btn-annotate">Annotation</button>
     </form>
 </div>
+<script src="../static/javascript/home.js"></script>
+
+
 {% endblock %}
