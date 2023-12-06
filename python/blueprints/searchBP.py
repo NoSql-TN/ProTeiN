@@ -6,11 +6,6 @@ from neo4j import GraphDatabase
 searchBP = Blueprint('searchBP', __name__)
 
 # Definition of the search route
-@searchBP.route("/stat")
-def stat():
-    return render_template("stat.html")
-
-# Definition of the search route
 @searchBP.route("/search", methods=["POST", "GET"])
 def search():
     if request.method == "POST":
@@ -32,7 +27,7 @@ def search():
 
 @searchBP.route('/api/fetchData/<protein_id>/<min_weight>/<max_weight>/<max_neighbor_depth>/<number_of_nodes>')
 def fetch_data(protein_id, min_weight, max_weight, max_neighbor_depth, number_of_nodes):
-    neo4j = Neo4j('bolt://localhost:7689', 'neo4j', 'remiremiremi2001')
+    neo4j = Neo4j('bolt://localhost:7687', 'neo4j', 'eliott1999')
     data, graph = neo4j.fetch_data(protein_id, min_weight, max_weight, max_neighbor_depth, number_of_nodes)
     
     nodes = []

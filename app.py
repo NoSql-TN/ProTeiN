@@ -13,6 +13,9 @@ def create_app() -> Flask:
     
     from python.blueprints.searchBP import searchBP
     app.register_blueprint(searchBP)
+
+    from python.blueprints.statBP import statBP
+    app.register_blueprint(statBP)
     
     @app.route('/favicon.ico')
     def favicon():
