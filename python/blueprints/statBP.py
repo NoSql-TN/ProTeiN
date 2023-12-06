@@ -85,6 +85,9 @@ def plot_graph2(result):
     plt.xlabel("Protein ID")
     plt.ylabel("Number of relations")
     plt.title("Number of relations for each protein ID")
+    plt.xticks(rotation=90)
+    #increase a bit the size of the space below the bars for the labels
+    plt.subplots_adjust(bottom=0.2)
     plt.savefig("static/images/result2.png")
     plt.close()
 
@@ -135,9 +138,12 @@ def plot_graph5(result):
     plt.xlabel("Number of interPro")
     plt.ylabel("Number of proteins")
     plt.title("Number of proteins for each number of interPro")
+    # Rotate x-axis labels for better readability
+    plt.xticks(rotation=90)
+    plt.subplots_adjust(bottom=0.2)
     plt.savefig("static/images/result5.png")
     plt.close()
 
-#plot_graph5(result5)
+plot_graph5(result5)
 
 #C'est cette idée mais il faut trouver les graphes adaptés et les graphes à faire.
