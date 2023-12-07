@@ -30,7 +30,7 @@ class Neo4jStatistics:
 
 #use neo4j with the request 'query' and return the result
 def use_neo4j(query):
-    neo4j = Neo4jStatistics('bolt://localhost:7687', 'neo4j', 'eliott1999')
+    neo4j = Neo4jStatistics('bolt://localhost:7687', 'neo4j', 'remiremiremi2001')
     data, graph = neo4j.fetch_data(query)
     neo4j.close()
     return data, graph

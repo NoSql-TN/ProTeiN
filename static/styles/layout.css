@@ -7,9 +7,6 @@ body{
 	margin: 0;
 	padding: 0;
 }
-i {
-	margin-right: 10px;
-}
 
 .titre-header{
 	color: #fff;
@@ -33,9 +30,9 @@ i {
 
 .search-bar{
 	width: 500px;
-	height: 50px;
+	height: 60px;
 	border: none;
-	border-radius: 50px;
+	border-radius: 30px;
 	padding: 0px 20px;
 	font-size: 1.2rem;
 }

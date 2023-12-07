@@ -1,8 +1,8 @@
-async function fetchDataAndDraw(proteinId, minWeight, maxWeight,maxNeighborDepth, numberOfNodes) {
+async function fetchDataAndDraw(proteinId, minWeight, maxWeight,maxNeighborDepth, numberOfNodes, searchType) {
 
 	try {
 		// Fetch data from Flask API
-		const response = await fetch(`/api/fetchData/${proteinId}/${minWeight}/${maxWeight}/${maxNeighborDepth}/${numberOfNodes}`);
+		const response = await fetch(`/api/fetchData/${proteinId}/${minWeight}/${maxWeight}/${maxNeighborDepth}/${numberOfNodes}/${searchType}`);
 		const data = await response.json();
 
 		
@@ -20,6 +20,7 @@ function updateGraph(data, minWeight, maxWeight,maxNeighborDepth, numberOfNodes)
 	// Extract nodes and links from Neo4j response (replace with your data extraction logic)
 	const nodes = extractNodes(data);
 	const links = extractLinks(data);
+	const nbr_nodes = nodes.length < 200 ? 200 : nodes.length;	
 	const proteinId = nodes[0].title;
 	maxNeighborDepth = parseInt(maxNeighborDepth);
 
@@ -48,7 +49,7 @@ function updateGraph(data, minWeight, maxWeight,maxNeighborDepth, numberOfNodes)
 	const svg = d3.create("svg")
 		.attr("width", width)
 		.attr("height", height)
-		.attr("viewBox", [-width/ 4, -height/ 4, width/2, height/2])
+		.attr("viewBox", [-width/ (4* 200/nbr_nodes), -height/ (4* 200/nbr_nodes), width/(2* 200/nbr_nodes), height/(2* 200/nbr_nodes)])
 		.attr("style", "max-width: 100%; height: 99vh; max-height: 100%; position: absolute; top: 0; left: 0; z-index: 1;");
 
 	// add zoom capabilities
@@ -125,7 +126,7 @@ function updateGraph(data, minWeight, maxWeight,maxNeighborDepth, numberOfNodes)
 	function dragended(event) {
 		if (!event.active) simulation.alphaTarget(0);
 		if (event.sourceEvent.shiftKey) {
-			window.location.href = `/search?proteinId=${event.subject.title}&minWeight=${minWeight}&maxNeighborDepth=${maxNeighborDepth}&maxWeight=${maxWeight}&numberOfNodes=${numberOfNodes}`;
+			window.location.href = `/search?proteinId=${event.subject.title}&minWeight=${minWeight}&maxNeighborDepth=${maxNeighborDepth}&maxWeight=${maxWeight}&numberOfNodes=${numberOfNodes}&searchType="proteinentry"`;
 		}
 		document.getElementById("proteinInfo").innerHTML = `<h3>Protein Info :</h3>
 			<p style="padding-top: 10px;"><strong>Entry Name</strong>: ${event.subject.title}</p>
@@ -162,7 +163,7 @@ function updateGraph(data, minWeight, maxWeight,maxNeighborDepth, numberOfNodes)
 	function createTutorial() {
 		const tutorial = document.createElement("div");
 		tutorial.setAttribute("id", "tutorial");
-		tutorial.setAttribute("style", "background-color: white; border-radius: 5px; border: 1px solid black; z-index: 99999999999999999999999; padding: 5px; width: auto; height: auto; display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start;");
+		tutorial.setAttribute("style", "background-color: white; border-radius: 5px; border: 1px solid black; z-index: 0; padding: 5px; width: auto; height: auto; display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start;");
 		tutorial.innerHTML = `<h3>Tutorial :</h3>
 			<p style="padding-top: 10px;"><strong>Zoom</strong>: Scroll</p>
 			<p style="padding-top: 5px;"><strong>Drag</strong>: Click and drag</p>
@@ -185,13 +186,17 @@ function updateGraph(data, minWeight, maxWeight,maxNeighborDepth, numberOfNodes)
 	function createProteinInfo() {
 		const proteinInfo = document.createElement("div");
 		proteinInfo.setAttribute("id", "proteinInfo");
-		proteinInfo.setAttribute("style", "background-color: white; border-radius: 5px; border: 1px solid black; z-index: 99999999999999999999999; padding: 5px; width: auto; height: auto; display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start;");
+		proteinInfo.setAttribute("style", "background-color: white; border-radius: 5px; border: 1px solid black; z-index: 0; padding: 5px; width: auto; height: auto; display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start;");
 		proteinInfo.innerHTML = `<h3>Protein Info :</h3>
 			<p style="padding-top: 10px;"><strong>Entry Name</strong>: ${nodeInfo.title}</p>
-			<p style="padding-top: 5px;"><strong>Organism</strong>: ${nodeInfo.organism}</p>
-			<p style="padding-top: 5px;"><strong>GO list</strong>: ${nodeInfo.interpro}</p>
-			<p style="padding-top: 5px;"><strong>EC Number</strong>: ${nodeInfo.ec}</p>
-			<p style="padding-top: 5px;"><strong>Start of sequence</strong>: ${nodeInfo.start}</p>
+			<p style="padding-top: 5px;"><strong>Organism</strong>: ${nodeInfo.organism}</p>`
+		if (nodeInfo.ec != null){
+			proteinInfo.innerHTML += `<p style="padding-top: 5px;"><strong>EC Number</strong>: ${nodeInfo.ec}</p>`;
+		}
+		if (nodeInfo.interpro != null){
+			proteinInfo.innerHTML += `<p style="padding-top: 5px;"><strong>GO list</strong>: ${nodeInfo.interpro}</p>`;
+		}
+		proteinInfo.innerHTML += `<p style="padding-top: 5px;"><strong>Start of sequence</strong>: ${nodeInfo.start}</p>
 			<p style="padding-top: 5px;"><strong>End of sequence</strong>: ${nodeInfo.end}</p>
 			<p style="padding-top: 5px;"><strong>Node ID</strong>: ${nodeInfo.id}</p>`;
 		return proteinInfo;
@@ -200,23 +205,21 @@ function updateGraph(data, minWeight, maxWeight,maxNeighborDepth, numberOfNodes)
 	function createStats() {
 		const stats = document.createElement("div");
 		stats.setAttribute("id", "stats");
-		stats.setAttribute("style", "background-color: white; border-radius: 5px; border: 1px solid black; z-index: 99999999999999999999999; padding: 5px; width: fit-content; height: auto; display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start;");
+		stats.setAttribute("style", "background-color: white; border-radius: 5px; border: 1px solid black; z-index: 0; padding: 5px; width: fit-content; height: auto; display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start;");
 		stats.innerHTML = `<h3>Stats :</h3>
 			<p style="padding-top: 10px;"><strong>Number of nodes in the graph</strong>: ${nodes.length}</p>
 			<p style="padding-top: 5px;"><strong>Number of links in the graph</strong>: ${links.length}</p>
-			<p style="padding-top: 5px;"><strong>Total number of nodes</strong>: ${data.stats.total_nodes}</p>
-			<p style="padding-top: 5px;"><strong>Number of non annotated nodes with GO terms</strong>: ${data.stats.non_annotated_nodes_with_GO}</p>
-			<p style="padding-top: 5px;"><strong>Number of non annotated nodes with EC terms</strong>: ${data.stats.non_annotated_nodes_with_EC}</p>
-			<p style="padding-top: 5px;"><strong>Number of non annotated nodes with GO and EC terms</strong>: ${data.stats.non_annotated_nodes_with_EC_and_GO}</p>
-			<p style="padding-top: 5px;"><strong>Number of non annotated nodes with GO or EC terms</strong>: ${data.stats.non_annotated_nodes_with_EC_or_GO}</p>
-			<p style="padding-top: 5px;"><strong>Number of isolated nodes</strong>: ${data.stats.isolated_nodes}</p>`
+			<p style="padding-top: 5px;"><strong>Number of nodes in the graph with first degree relation</strong>: ${data.stats.degree_1}</p>
+			<p style="padding-top: 5px;"><strong>Number of nodes in the graph with second degree relation</strong>: ${data.stats.degree_2}</p>
+			<p style="padding-top: 5px;"><strong>Average relationship weight</strong>: ${links.reduce((a, b) => a + b.value, 0) / links.length}</p>
+			<p style="padding-top: 5px;"><strong>Max relationship weight</strong>: ${data.stats.max_weight[1]} <strong>with</strong> ${data.stats.max_weight[0]}</p>`
 		return stats;
 	}
 
 	// create the right div that contains the protein info and the stats
 	rightContainer = document.createElement("div");
 	rightContainer.setAttribute("id", "rightContainer");
-	rightContainer.setAttribute("style", "position: absolute; top: 10px; right: 10px; display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-end;");
+	rightContainer.setAttribute("style", "position: absolute; top: 10px; right: 10px; display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-end; z-index: 0;");
 	rightContainer.appendChild(createProteinInfo());
 	rightContainer.appendChild(document.createElement("br"));
 	rightContainer.appendChild(createStats());
