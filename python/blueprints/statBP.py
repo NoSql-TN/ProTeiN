@@ -1,6 +1,7 @@
 from flask import Blueprint,session,redirect
 from flask.templating import render_template
 from neo4j import GraphDatabase
+import numpy as np
 import matplotlib.pyplot as plt
 from io import BytesIO
 from PIL import Image
@@ -30,12 +31,13 @@ class Neo4jStatistics:
 
 #use neo4j with the request 'query' and return the result
 def use_neo4j(query):
-    neo4j = Neo4jStatistics('bolt://localhost:7687', 'neo4j', 'remiremiremi2001')
+    neo4j = Neo4jStatistics('bolt://localhost:7687', 'neo4j', 'eliott1999')
     data, graph = neo4j.fetch_data(query)
     print(data)
     print(graph)
     neo4j.close()
     return data, graph
+
 
 #List of the queries
 list_of_queries = ["MATCH ()-[r:similarity]->() RETURN COUNT(r) AS nombreTotalRelations;", 
@@ -52,6 +54,8 @@ list_of_queries = ["MATCH ()-[r:similarity]->() RETURN COUNT(r) AS nombreTotalRe
 #List of the names of the queries
 #list_of_names = ["nombreTotalRelations", "moyennePoidsTotale", "nombreRelationsmax10", "nombreRelationsJaccard", "nombreNodesJaccard", "nombreProteinsInterPro"]
 
+
+
 result0 = use_neo4j(list_of_queries[0])
 result1 = use_neo4j(list_of_queries[1])
 result2 = use_neo4j(list_of_queries[2])
@@ -64,7 +68,8 @@ result8 = use_neo4j(list_of_queries[8])
 result9 = use_neo4j(list_of_queries[9])
 result10 = use_neo4j(list_of_queries[10])
 
-
+print("bite")
+print(result2[0])
 
 #collect the result of the query 0
 def collect_result0(result):
@@ -74,7 +79,7 @@ def collect_result0(result):
     return result0
 
 result0 = collect_result0(result0)
-print(result0)
+#print(result0)
 
 
 #collect the result of the query 1
@@ -85,7 +90,7 @@ def collect_result1(result):
     return result1
 
 result1 = collect_result1(result1)
-print(result1)
+#print(result1)
 
 
 #plot the graph of the query 2
@@ -105,7 +110,7 @@ def plot_graph2(result):
     plt.savefig("static/images/result2.png")
     plt.close()
 
-plot_graph2(result2)
+#plot_graph2(result2)
 
 
 #plot the disk representation of the query 3
@@ -120,7 +125,7 @@ def plot_graph3(result):
     plt.savefig("static/images/result3.png")
     plt.close()
 
-plot_graph3(result3)
+#plot_graph3(result3)
 
 #plot the disk representation of the query 4
 def plot_graph4(result):
@@ -134,7 +139,7 @@ def plot_graph4(result):
     plt.savefig("static/images/result4.png")
     plt.close()
 
-plot_graph4(result4)
+#plot_graph4(result4)
 
 #plot the graph of the query 5
 def plot_graph5(result):
@@ -156,7 +161,7 @@ def plot_graph5(result):
     plt.savefig("static/images/result5.png")
     plt.close()
 
-plot_graph5(result5)
+#plot_graph5(result5)
 
 
 
@@ -174,7 +179,7 @@ def plot_graph6(result):
     plt.savefig("static/images/result6.png")
     plt.close()
 
-plot_graph6(result6)
+#plot_graph6(result6)
 
 #plot the graph of the query 7
 def plot_graph7(result):
@@ -190,7 +195,7 @@ def plot_graph7(result):
     plt.savefig("static/images/result7.png")
     plt.close()
 
-plot_graph7(result7)
+#plot_graph7(result7)
 
 #plot the graph of the query 8
 def plot_graph8(result):
@@ -206,7 +211,7 @@ def plot_graph8(result):
     plt.savefig("static/images/result8.png")
     plt.close()
 
-plot_graph8(result8)
+#plot_graph8(result8)
 
 #collect the result of the query 9
 def collect_result9(result):
@@ -218,7 +223,7 @@ def collect_result9(result):
     return result9
 
 result9 = collect_result9(result9)
-print(result9)
+#print(result9)
 
 #collect the result of the query 10
 def collect_result10(result):
@@ -229,8 +234,13 @@ def collect_result10(result):
     return result10
 
 result10 = collect_result10(result10)
-print(result10)
+#print(result10)
 resulttot = result9 + result10
-print(resulttot)
+#print(resulttot)
 
 #C'est cette idée mais il faut trouver les graphes adaptés et les graphes à faire.
+
+
+def get_relations():
+    res = use_neo4j(list_of_queries[2])
+    res = res[0]
