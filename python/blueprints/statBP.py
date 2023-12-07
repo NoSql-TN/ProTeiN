@@ -15,6 +15,14 @@ def stat():
 def get_relations():
     res = use_neo4j(list_of_queries[2])
     res = jsonify(res[0])
+    # print(res)
+    #return in the json format the result of the query
+    return res
+
+@statBP.route("/jaccard")
+def get_jaccard():
+    res = use_neo4j(list_of_queries[3])
+    res = jsonify(res[0])
     print(res)
     #return in the json format the result of the query
     return res
