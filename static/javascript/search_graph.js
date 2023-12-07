@@ -49,7 +49,7 @@ function updateGraph(data, minWeight, maxWeight,maxNeighborDepth, numberOfNodes)
 	const svg = d3.create("svg")
 		.attr("width", width)
 		.attr("height", height)
-		.attr("viewBox", [-width/ (4* 200/nbr_nodes), -height/ (4* 200/nbr_nodes), width/(2* 200/nbr_nodes), height/(2* 200/nbr_nodes)])
+		.attr("viewBox", [-width/ (4* 150/nbr_nodes), -height/ (4* 150/nbr_nodes), width/(2* 150/nbr_nodes), height/(2* 0/nbr_nodes)])
 		.attr("style", "max-width: 100%; height: 99vh; max-height: 100%; position: absolute; top: 0; left: 0; z-index: 1;");
 
 	// add zoom capabilities
@@ -132,7 +132,7 @@ function updateGraph(data, minWeight, maxWeight,maxNeighborDepth, numberOfNodes)
 			<p style="padding-top: 10px;"><strong>Entry Name</strong>: ${event.subject.title}</p>
 			<p style="padding-top: 5px;"><strong>Organism</strong>: ${event.subject.organism}</p>
 			<p style="padding-top: 5px;"><strong>GO list</strong>: ${event.subject.interpro}</p>
-			<p style="padding-top: 5px;"><strong>EC Number</strong>: ${event.subject.ec}</p>
+			<p style="padding-top: 5px;"><strong>EC Number</strong>: ${event.subject.ec == null ? "None" : event.subject.ec}</p>
 			<p style="padding-top: 5px;"><strong>Start of sequence</strong>: ${event.subject.start}</p>
 			<p style="padding-top: 5px;"><strong>End of sequence</strong>: ${event.subject.end}</p>
 			<p style="padding-top: 5px;"><strong>Node ID</strong>: ${event.subject.id}</p>`;
@@ -189,14 +189,10 @@ function updateGraph(data, minWeight, maxWeight,maxNeighborDepth, numberOfNodes)
 		proteinInfo.setAttribute("style", "background-color: white; border-radius: 5px; border: 1px solid black; z-index: 0; padding: 5px; width: auto; height: auto; display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start;");
 		proteinInfo.innerHTML = `<h3>Protein Info :</h3>
 			<p style="padding-top: 10px;"><strong>Entry Name</strong>: ${nodeInfo.title}</p>
-			<p style="padding-top: 5px;"><strong>Organism</strong>: ${nodeInfo.organism}</p>`
-		if (nodeInfo.ec != null){
-			proteinInfo.innerHTML += `<p style="padding-top: 5px;"><strong>EC Number</strong>: ${nodeInfo.ec}</p>`;
-		}
-		if (nodeInfo.interpro != null){
-			proteinInfo.innerHTML += `<p style="padding-top: 5px;"><strong>GO list</strong>: ${nodeInfo.interpro}</p>`;
-		}
-		proteinInfo.innerHTML += `<p style="padding-top: 5px;"><strong>Start of sequence</strong>: ${nodeInfo.start}</p>
+			<p style="padding-top: 5px;"><strong>Organism</strong>: ${nodeInfo.organism}</p>
+			<p style="padding-top: 5px;"><strong>EC Number</strong>: ${nodeInfo.ec == null ? "None" : nodeInfo.ec}</p>
+			<p style="padding-top: 5px;"><strong>GO list</strong>: ${nodeInfo.interpro == null ? "None" : nodeInfo.interpro}</p>	
+			<p style="padding-top: 5px;"><strong>Start of sequence</strong>: ${nodeInfo.start}</p>
 			<p style="padding-top: 5px;"><strong>End of sequence</strong>: ${nodeInfo.end}</p>
 			<p style="padding-top: 5px;"><strong>Node ID</strong>: ${nodeInfo.id}</p>`;
 		return proteinInfo;
