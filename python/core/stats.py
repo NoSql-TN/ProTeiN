@@ -17,7 +17,7 @@ class Neo4jStatistics:
 
 #use neo4j with the request 'query' and return the result
 def use_neo4j(query):
-    neo4j = Neo4jStatistics('bolt://localhost:7687', 'neo4j', 'remiremiremi2001')
+    neo4j = Neo4jStatistics('bolt://localhost:7687', 'neo4j', 'eliott1999')
     data, graph = neo4j.fetch_data(query)
     print(data)
     print(graph)
@@ -36,7 +36,16 @@ list_of_queries = ["MATCH ()-[r:similarity]->() RETURN COUNT(r) AS nombreTotalRe
                    "MATCH (p:Protein) WHERE p.EC_number IS NOT NULL WITH p.EC_number AS ecNumber, COUNT(*) AS frequency RETURN ecNumber, frequency ORDER BY frequency DESC LIMIT 10;",
                    "MATCH (p:Protein)-[r:similarity]-(q:Protein) WHERE p.organism IS NOT NULL AND q.organism IS NOT NULL WITH p.organism AS organism, AVG(r.jaccardID) AS avgSimilarity RETURN organism, avgSimilarity ORDER BY avgSimilarity DESC LIMIT 10;",
                    "MATCH (p:Protein) WHERE p.organism = 'Homo sapiens (Human)' AND p.interPro IS NOT NULL AND SIZE(p.interPro) > 0 UNWIND p.interPro AS interProElement WITH p.organism AS organism, interProElement, COUNT(*) AS frequency RETURN organism, interProElement, frequency ORDER BY organism, frequency DESC LIMIT 1;",
-                   "MATCH (p:Protein) WHERE p.organism = 'Homo sapiens (Human)' AND p.EC_number IS NOT NULL WITH p.EC_number AS ecNumber, COUNT(*) AS frequency RETURN ecNumber, frequency ORDER BY frequency DESC LIMIT 1;"]
+                   "MATCH (p:Protein) WHERE p.organism = 'Homo sapiens (Human)' AND p.EC_number IS NOT NULL WITH p.EC_number AS ecNumber, COUNT(*) AS freq RETURN ecNumber, freq ORDER BY freq DESC LIMIT 1;",
+                    "MATCH (p:Protein) WHERE p.organism = 'Mus musculus (Mouse)' AND p.interPro IS NOT NULL AND SIZE(p.interPro) > 0 UNWIND p.interPro AS interProElement WITH p.organism AS organism, interProElement, COUNT(*) AS frequency RETURN organism, interProElement, frequency ORDER BY organism, frequency DESC LIMIT 1;",
+                   "MATCH (p:Protein) WHERE p.organism = 'Mus musculus (Mouse)' AND p.EC_number IS NOT NULL WITH p.EC_number AS ecNumber, COUNT(*) AS freq RETURN ecNumber, freq ORDER BY freq DESC LIMIT 1;",
+                    "MATCH (p:Protein) WHERE p.organism = 'Arabidopsis thaliana (Mouse-ear cress)' AND p.interPro IS NOT NULL AND SIZE(p.interPro) > 0 UNWIND p.interPro AS interProElement WITH p.organism AS organism, interProElement, COUNT(*) AS frequency RETURN organism, interProElement, frequency ORDER BY organism, frequency DESC LIMIT 1;",
+                   "MATCH (p:Protein) WHERE p.organism = 'Arabidopsis thaliana (Mouse-ear cress)' AND p.EC_number IS NOT NULL WITH p.EC_number AS ecNumber, COUNT(*) AS freq RETURN ecNumber, freq ORDER BY freq DESC LIMIT 1;",
+                    "MATCH (p:Protein) WHERE p.organism = 'Rattus norvegicus (Rat)' AND p.interPro IS NOT NULL AND SIZE(p.interPro) > 0 UNWIND p.interPro AS interProElement WITH p.organism AS organism, interProElement, COUNT(*) AS frequency RETURN organism, interProElement, frequency ORDER BY organism, frequency DESC LIMIT 1;",
+                   "MATCH (p:Protein) WHERE p.organism = 'Rattus norvegicus (Rat)' AND p.EC_number IS NOT NULL WITH p.EC_number AS ecNumber, COUNT(*) AS freq RETURN ecNumber, freq ORDER BY freq DESC LIMIT 1;",
+                    "MATCH (p:Protein) WHERE p.organism = 'Saccharomyces cerevisiae (strain ATCC 204508 / S288c) (Baker's yeast)' AND p.interPro IS NOT NULL AND SIZE(p.interPro) > 0 UNWIND p.interPro AS interProElement WITH p.organism AS organism, interProElement, COUNT(*) AS frequency RETURN organism, interProElement, frequency ORDER BY organism, frequency DESC LIMIT 1;",
+                   "MATCH (p:Protein) WHERE p.organism = 'Saccharomyces cerevisiae (strain ATCC 204508 / S288c) (Baker's yeast)' AND p.EC_number IS NOT NULL WITH p.EC_number AS ecNumber, COUNT(*) AS freq RETURN ecNumber, freq ORDER BY freq DESC LIMIT 1;",
+                    ]
 #List of the names of the queries
 #list_of_names = ["nombreTotalRelations", "moyennePoidsTotale", "nombreRelationsmax10", "nombreRelationsJaccard", "nombreNodesJaccard", "nombreProteinsInterPro"]
 

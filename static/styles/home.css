@@ -120,3 +120,17 @@ input[type="range"] {
     cursor: pointer;
 }
 
+
+.graph {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+    margin-bottom: 40px;
+    margin-left: 4%;
+    margin-right: 5%;
+    padding: 20px;
+    border-radius: 20px;
+    background-color: #fff;
+}
