@@ -30,14 +30,20 @@ def search():
 @searchBP.route('/api/fetchData/<protein_id>/<min_weight>/<max_weight>/<max_neighbor_depth>/<number_of_nodes>/<search_type>')
 def fetch_data(protein_id, min_weight, max_weight, max_neighbor_depth, number_of_nodes, search_type):
     neo4j = Neo4j('bolt://localhost:7687', 'neo4j', 'remiremiremi2001')
-    graph, data = neo4j.fetch_data(protein_id, min_weight, max_weight, max_neighbor_depth, number_of_nodes, search_type)
+    data = None
+    if max_neighbor_depth == "0":
+        graph = neo4j.fetch_data(protein_id, min_weight, max_weight, max_neighbor_depth, number_of_nodes, search_type)
+    else:
+        graph, data = neo4j.fetch_data(protein_id, min_weight, max_weight, max_neighbor_depth, number_of_nodes, search_type)
     nodes = []
     relationships = []
+    
+    print("Number of nodes: ", len(graph.nodes))
 
     
     # Create the data to return
     for node in graph.nodes:
-        nodes.append({"id": node.id, "label": next(iter(node.labels)), "title": node["Proteinid"], "group": compute_group(node["Proteinid"], data), "start": node["sequence"][0:10], "end": node["sequence"][-10:], "organism": node["organism"], "interpro": node["interPro"], "ec": node["EC_number"]})    
+        nodes.append({"id": node.id, "label": next(iter(node.labels)), "title": node["Proteinid"], "group": compute_group(node["Proteinid"], data, max_neighbor_depth), "start": node["sequence"][0:10], "end": node["sequence"][-10:], "organism": node["organism"], "interpro": node["interPro"], "ec": node["EC_number"]})    
     for rel in graph.relationships:
         if float(rel["jaccardID"]) != 0:
             relationships.append({"source": rel.start_node.id, "target": rel.end_node.id, "label": rel.type, "title": rel["jaccardID"], "value": rel["jaccardID"]})
@@ -71,6 +77,8 @@ class Neo4j:
             if max_neighbor_depth == "0":
                 return result.graph()
             # there is multiple searched protein in the graph and we want all of them
+            if max_neighbor_depth == "0":
+                return result.graph()
             return result.graph(), result.data("r")
     
     def fetch_stats(self, searched_protein_id, search_type):
@@ -88,7 +96,9 @@ class Neo4j:
         return stats
         
         
-def compute_group(nodeID, data):
+def compute_group(nodeID, data, max_neighbor_depth):
+    if max_neighbor_depth == "0":
+        return 1
     for relationship in data:
         if relationship["r"][0]["Proteinid"] == nodeID:
             return 1
