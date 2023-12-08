@@ -33,6 +33,8 @@ def fetch_data(protein_id, min_weight, max_weight, max_neighbor_depth, number_of
     graph, data = neo4j.fetch_data(protein_id, min_weight, max_weight, max_neighbor_depth, number_of_nodes, search_type)
     nodes = []
     relationships = []
+    
+    print("Number of nodes: ", len(graph.nodes))
 
     
     # Create the data to return

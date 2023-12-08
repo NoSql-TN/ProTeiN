@@ -113,10 +113,18 @@ input[type="range"] {
 
 .search-type option {
     font-size: 20px;
-    color: #333333;
+    color: #1a1a1a;
     border: none;
     border-radius: 20px;
     background-color: #fff;
     cursor: pointer;
 }
 
+
+.btn-search {
+    background-color: #FAC898;
+}
+
+.btn-annotate {
+    background-color: #FAC898;
+}

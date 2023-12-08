@@ -5,6 +5,25 @@ async function fetchDataAndDraw(proteinId, minWeight, maxWeight,maxNeighborDepth
 		const response = await fetch(`/api/fetchData/${proteinId}/${minWeight}/${maxWeight}/${maxNeighborDepth}/${numberOfNodes}/${searchType}`);
 		const data = await response.json();
 
+		// check if their is nodes in the graph
+		if (data.nodes.length == 0) {
+			// make a big message that says no nodes found on the screen by replacing the body with a div that contains the message
+			const noNodes = document.createElement("div");
+			noNodes.setAttribute("id", "noNodes");
+			noNodes.setAttribute("style", "background-color: white;  z-index: 0; width: 100%; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center;");
+			noNodes.innerHTML = `<h3 style="padding-bottom: 10px; font-size: 50px;">No nodes found for this search</h3>`;
+			document.body.innerHTML = "";
+			const returnButton = document.createElement("button");
+			returnButton.setAttribute("id", "returnButton");
+			returnButton.setAttribute("style", " top: 10px; left: 10px; z-index: 99999999999999999999999; padding: 5px; width: auto; height: auto; background-color: white; border-radius: 5px; border: 1px solid black; font-size: 30px;");
+			returnButton.innerHTML = "Return";
+			returnButton.addEventListener("click", () => {
+				window.location.href = "/";
+			});
+			noNodes.appendChild(returnButton);
+			document.body.appendChild(noNodes);
+			return;
+		}
 		
 		// Update the graph
 		const graph = updateGraph(data, minWeight, maxWeight, maxNeighborDepth, numberOfNodes);
@@ -27,13 +46,9 @@ function updateGraph(data, minWeight, maxWeight,maxNeighborDepth, numberOfNodes)
 	const width = window.innerWidth;
 	const height = window.innerHeight;
 
-	const colorPalette = ["#ffd700",
-	"#ffb14e",
-	"#fa8775",
-	"#ea5f94",
+	const colorPalette = ["#ff0000",
 	"#cd34b5",
-	"#9d02d7",
-	"#0000ff"];
+	"#9ce800"];
 
 	// Specify the color scale.
 	const color = d3.scaleOrdinal(colorPalette);
@@ -49,7 +64,7 @@ function updateGraph(data, minWeight, maxWeight,maxNeighborDepth, numberOfNodes)
 	const svg = d3.create("svg")
 		.attr("width", width)
 		.attr("height", height)
-		.attr("viewBox", [-width/ (4* 150/nbr_nodes), -height/ (4* 150/nbr_nodes), width/(2* 150/nbr_nodes), height/(2* 0/nbr_nodes)])
+		.attr("viewBox", [-width/ (4* 150/nbr_nodes), -height/ (4* 150/nbr_nodes), width/(2* 150/nbr_nodes), height/(2* 150/nbr_nodes)])
 		.attr("style", "max-width: 100%; height: 99vh; max-height: 100%; position: absolute; top: 0; left: 0; z-index: 1;");
 
 	// add zoom capabilities
@@ -71,7 +86,7 @@ function updateGraph(data, minWeight, maxWeight,maxNeighborDepth, numberOfNodes)
 		.selectAll("line")
 		.data(links)
 		.join("line")
-		.attr("stroke-width", d => Math.round(d.value * 30)/7);
+		.attr("stroke-width", d => Math.round((d.value+1) ** 2));
 	
 	link.append("title")
 		.text(d => d.value);
@@ -83,7 +98,7 @@ function updateGraph(data, minWeight, maxWeight,maxNeighborDepth, numberOfNodes)
 		.data(nodes)
 		.join("circle")
 		.attr("r", 5)
-		.attr("fill", (d) => colorPalette[Math.round(((colorPalette.length - 1)/(maxNeighborDepth+1)) * d.group)])
+		.attr("fill", (d) => colorPalette[Math.round(((colorPalette.length - 1)/(maxNeighborDepth)) * d.group-1)])
 
 	node.append("title")
 		.text(d => d.title);
@@ -130,7 +145,7 @@ function updateGraph(data, minWeight, maxWeight,maxNeighborDepth, numberOfNodes)
 		}
 		document.getElementById("proteinInfo").innerHTML = `<h3>Protein Info :</h3>
 			<p style="padding-top: 10px;"><strong>Entry Name</strong>: ${event.subject.title}</p>
-			<p style="padding-top: 5px;"><strong>Organism</strong>: ${event.subject.organism}</p>
+			<p style="padding-top: 5px;"><strong>Organism</strong>: ${event.subject.organism.length > 50 ? event.subject.organism.slice(0, 50) + "..." : event.subject.organism}</p>
 			<p style="padding-top: 5px;"><strong>GO list</strong>: ${event.subject.interpro}</p>
 			<p style="padding-top: 5px;"><strong>EC Number</strong>: ${event.subject.ec == null ? "None" : event.subject.ec}</p>
 			<p style="padding-top: 5px;"><strong>Start of sequence</strong>: ${event.subject.start}</p>
@@ -151,9 +166,9 @@ function updateGraph(data, minWeight, maxWeight,maxNeighborDepth, numberOfNodes)
 			legendItem.setAttribute("id", `legend-${i}`);
 			// add a circle of the color and the text as explained above
 			if (i == 1) {
-				legendItem.innerHTML = `<svg width="20" height="20"><circle cx="10" cy="10" r="5" fill="${colorPalette[Math.round(((colorPalette.length - 1)/(maxNeighborDepth+1)) * i)]}"></circle></svg> Searched Protein`;
+				legendItem.innerHTML = `<svg width="20" height="20"><circle cx="10" cy="10" r="5" fill="${colorPalette[Math.round(((colorPalette.length - 1)/(maxNeighborDepth)) * i-1)]}"></circle></svg> Searched Protein`;
 			} else {
-				legendItem.innerHTML = `<svg width="20" height="20"><circle cx="10" cy="10" r="5" fill="${colorPalette[Math.round(((colorPalette.length - 1)/(maxNeighborDepth+1)) * i)]}"></circle></svg> Neighbor ${i - 1}`;
+				legendItem.innerHTML = `<svg width="20" height="20"><circle cx="10" cy="10" r="5" fill="${colorPalette[Math.round(((colorPalette.length - 1)/(maxNeighborDepth)) * i-1)]}"></circle></svg> Neighbor ${i - 1}`;
 			}
 			legend.appendChild(legendItem);
 		}
@@ -166,7 +181,7 @@ function updateGraph(data, minWeight, maxWeight,maxNeighborDepth, numberOfNodes)
 		tutorial.setAttribute("style", "background-color: white; border-radius: 5px; border: 1px solid black; z-index: 0; padding: 5px; width: auto; height: auto; display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start;");
 		tutorial.innerHTML = `<h3>Tutorial :</h3>
 			<p style="padding-top: 10px;"><strong>Zoom</strong>: Scroll</p>
-			<p style="padding-top: 5px;"><strong>Drag</strong>: Click and drag</p>
+			<p style="padding-top: 5px;"><strong>Move</strong>: Click and drag</p>
 			<p style="padding-top: 5px;"><strong>See info</strong>: Click on a node</p>
 			<p style="padding-top: 5px;"><strong>Search a Neighbor</strong>: Shift + Click on a node</p>`;	
 		return tutorial;
@@ -189,7 +204,7 @@ function updateGraph(data, minWeight, maxWeight,maxNeighborDepth, numberOfNodes)
 		proteinInfo.setAttribute("style", "background-color: white; border-radius: 5px; border: 1px solid black; z-index: 0; padding: 5px; width: auto; height: auto; display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start;");
 		proteinInfo.innerHTML = `<h3>Protein Info :</h3>
 			<p style="padding-top: 10px;"><strong>Entry Name</strong>: ${nodeInfo.title}</p>
-			<p style="padding-top: 5px;"><strong>Organism</strong>: ${nodeInfo.organism}</p>
+			<p style="padding-top: 5px;"><strong>Organism</strong>: ${nodeInfo.organism.length > 50 ? nodeInfo.organism.slice(0, 50) + "..." : nodeInfo.organism}</p>
 			<p style="padding-top: 5px;"><strong>EC Number</strong>: ${nodeInfo.ec == null ? "None" : nodeInfo.ec}</p>
 			<p style="padding-top: 5px;"><strong>GO list</strong>: ${nodeInfo.interpro == null ? "None" : nodeInfo.interpro}</p>	
 			<p style="padding-top: 5px;"><strong>Start of sequence</strong>: ${nodeInfo.start}</p>
@@ -205,9 +220,9 @@ function updateGraph(data, minWeight, maxWeight,maxNeighborDepth, numberOfNodes)
 		stats.innerHTML = `<h3>Stats :</h3>
 			<p style="padding-top: 10px;"><strong>Number of nodes in the graph</strong>: ${nodes.length}</p>
 			<p style="padding-top: 5px;"><strong>Number of links in the graph</strong>: ${links.length}</p>
-			<p style="padding-top: 5px;"><strong>Number of nodes in the graph with first degree relation</strong>: ${data.stats.degree_1}</p>
-			<p style="padding-top: 5px;"><strong>Number of nodes in the graph with second degree relation</strong>: ${data.stats.degree_2}</p>
-			<p style="padding-top: 5px;"><strong>Average relationship weight</strong>: ${links.reduce((a, b) => a + b.value, 0) / links.length}</p>
+			<p style="padding-top: 5px;"><strong>Number of 1st degree relation</strong>: ${data.stats.degree_1}</p>
+			<p style="padding-top: 5px;"><strong>Number of 2nd degree relation</strong>: ${data.stats.degree_2}</p>
+			<p style="padding-top: 5px;"><strong>Average relationship weight</strong>: ${(links.reduce((a, b) => a + b.value, 0) / links.length).toFixed(3)}</p>
 			<p style="padding-top: 5px;"><strong>Max relationship weight</strong>: ${data.stats.max_weight[1]} <strong>with</strong> ${data.stats.max_weight[0]}</p>`
 		return stats;
 	}
