@@ -92,7 +92,6 @@ function updateGraph(data, minWeight, maxWeight,maxNeighborDepth, numberOfNodes)
 	link.append("title")
 		.text(d => d.value);
 
-	console.log(maxNeighborDepth);
 	const node = svg.append("g")
 		.attr("stroke", "#fff")
 		.attr("stroke-width", 1)
@@ -100,7 +99,7 @@ function updateGraph(data, minWeight, maxWeight,maxNeighborDepth, numberOfNodes)
 		.data(nodes)
 		.join("circle")
 		.attr("r", 5)
-		.attr("fill", (d) => colorPalette[Math.ceil(((colorPalette.length - 1)/(maxNeighborDepth)) * (d.group-1))])
+		.attr("fill", (d) => colorPalette[Math.round(((colorPalette.length - 1)/(maxNeighborDepth == 0 ? 1 : maxNeighborDepth)) * (d.group-1))])
 
 	node.append("title")
 		.text(d => d.title);
@@ -168,9 +167,9 @@ function updateGraph(data, minWeight, maxWeight,maxNeighborDepth, numberOfNodes)
 			legendItem.setAttribute("id", `legend-${i}`);
 			// add a circle of the color and the text as explained above
 			if (i == 1) {
-				legendItem.innerHTML = `<svg width="20" height="20"><circle cx="10" cy="10" r="5" fill="${colorPalette[Math.round(((colorPalette.length - 1)/(maxNeighborDepth)) * (i-1))]}"></circle></svg> Searched Protein`;
+				legendItem.innerHTML = `<svg width="20" height="20"><circle cx="10" cy="10" r="5" fill="${colorPalette[Math.round(((colorPalette.length - 1)/(maxNeighborDepth == 0 ? 1 : maxNeighborDepth)) * (i-1))]}"></circle></svg> Searched Protein`;
 			} else {
-				legendItem.innerHTML = `<svg width="20" height="20"><circle cx="10" cy="10" r="5" fill="${colorPalette[Math.round(((colorPalette.length - 1)/(maxNeighborDepth)) * (i-1))]}"></circle></svg> Neighbor ${i - 1}`;
+				legendItem.innerHTML = `<svg width="20" height="20"><circle cx="10" cy="10" r="5" fill="${colorPalette[Math.round(((colorPalette.length - 1)/(maxNeighborDepth == 0 ? 1 : maxNeighborDepth)) * (i-1))]}"></circle></svg> Neighbor ${i - 1}`;
 			}
 			legend.appendChild(legendItem);
 		}
