@@ -30,6 +30,7 @@ def search():
 @searchBP.route('/api/fetchData/<protein_id>/<min_weight>/<max_weight>/<max_neighbor_depth>/<number_of_nodes>/<search_type>')
 def fetch_data(protein_id, min_weight, max_weight, max_neighbor_depth, number_of_nodes, search_type):
     neo4j = Neo4j('bolt://localhost:7687', 'neo4j', 'remiremiremi2001')
+    print("search_type: ", search_type)
     graph, data = neo4j.fetch_data(protein_id, min_weight, max_weight, max_neighbor_depth, number_of_nodes, search_type)
     nodes = []
     relationships = []

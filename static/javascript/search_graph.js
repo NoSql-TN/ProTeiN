@@ -2,6 +2,7 @@ async function fetchDataAndDraw(proteinId, minWeight, maxWeight,maxNeighborDepth
 
 	try {
 		// Fetch data from Flask API
+		console.log(searchType);
 		const response = await fetch(`/api/fetchData/${proteinId}/${minWeight}/${maxWeight}/${maxNeighborDepth}/${numberOfNodes}/${searchType}`);
 		const data = await response.json();
 
@@ -91,6 +92,7 @@ function updateGraph(data, minWeight, maxWeight,maxNeighborDepth, numberOfNodes)
 	link.append("title")
 		.text(d => d.value);
 
+	console.log(maxNeighborDepth);
 	const node = svg.append("g")
 		.attr("stroke", "#fff")
 		.attr("stroke-width", 1)
@@ -98,7 +100,7 @@ function updateGraph(data, minWeight, maxWeight,maxNeighborDepth, numberOfNodes)
 		.data(nodes)
 		.join("circle")
 		.attr("r", 5)
-		.attr("fill", (d) => colorPalette[Math.round(((colorPalette.length - 1)/(maxNeighborDepth)) * d.group-1)])
+		.attr("fill", (d) => colorPalette[Math.ceil(((colorPalette.length - 1)/(maxNeighborDepth)) * (d.group-1))])
 
 	node.append("title")
 		.text(d => d.title);
@@ -141,7 +143,7 @@ function updateGraph(data, minWeight, maxWeight,maxNeighborDepth, numberOfNodes)
 	function dragended(event) {
 		if (!event.active) simulation.alphaTarget(0);
 		if (event.sourceEvent.shiftKey) {
-			window.location.href = `/search?proteinId=${event.subject.title}&minWeight=${minWeight}&maxNeighborDepth=${maxNeighborDepth}&maxWeight=${maxWeight}&numberOfNodes=${numberOfNodes}&searchType="proteinentry"`;
+			window.location.href = `/search?proteinId=${event.subject.title}&minWeight=${minWeight}&maxNeighborDepth=${maxNeighborDepth}&maxWeight=${maxWeight}&numberOfNodes=${numberOfNodes}&searchType=proteinentry`;
 		}
 		document.getElementById("proteinInfo").innerHTML = `<h3>Protein Info :</h3>
 			<p style="padding-top: 10px;"><strong>Entry Name</strong>: ${event.subject.title}</p>
@@ -166,9 +168,9 @@ function updateGraph(data, minWeight, maxWeight,maxNeighborDepth, numberOfNodes)
 			legendItem.setAttribute("id", `legend-${i}`);
 			// add a circle of the color and the text as explained above
 			if (i == 1) {
-				legendItem.innerHTML = `<svg width="20" height="20"><circle cx="10" cy="10" r="5" fill="${colorPalette[Math.round(((colorPalette.length - 1)/(maxNeighborDepth)) * i-1)]}"></circle></svg> Searched Protein`;
+				legendItem.innerHTML = `<svg width="20" height="20"><circle cx="10" cy="10" r="5" fill="${colorPalette[Math.round(((colorPalette.length - 1)/(maxNeighborDepth)) * (i-1))]}"></circle></svg> Searched Protein`;
 			} else {
-				legendItem.innerHTML = `<svg width="20" height="20"><circle cx="10" cy="10" r="5" fill="${colorPalette[Math.round(((colorPalette.length - 1)/(maxNeighborDepth)) * i-1)]}"></circle></svg> Neighbor ${i - 1}`;
+				legendItem.innerHTML = `<svg width="20" height="20"><circle cx="10" cy="10" r="5" fill="${colorPalette[Math.round(((colorPalette.length - 1)/(maxNeighborDepth)) * (i-1))]}"></circle></svg> Neighbor ${i - 1}`;
 			}
 			legend.appendChild(legendItem);
 		}
