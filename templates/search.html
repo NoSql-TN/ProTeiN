@@ -7,7 +7,7 @@
 <script src="../static/javascript/search_graph.js"></script>
 <script>
     function draw(){
-        fetchDataAndDraw("{{proteinid}}", "{{minweight}}", "{{maxweight}}","{{maxNeighborDepth}}", "{{numberOfNodes}}");
+        fetchDataAndDraw("{{proteinid}}", "{{minweight}}", "{{maxweight}}","{{maxNeighborDepth}}", "{{numberOfNodes}}", "{{searchType}}");
     }
 
     function createSliders() {
@@ -35,6 +35,7 @@
                 <p style="padding-top: 5px;"><strong>Max neighbor depth</strong>: <span id="maxNeighborDepthValue">{{maxNeighborDepth}}</span></p>
                 <input type="range" min="0" max="2" value="{{maxNeighborDepth}}" step="1" id="maxNeighborDepthSlider" style="margin-bottom: 15px;" name="maxNeighborDepth">
                 <input type="hidden" name="proteinId" value="{{proteinid}}">
+                <input type="hidden" name="searchType" value="{{searchType}}">
                 <input type="submit" value="Search" style="margin: auto; margin-bottom: 15px; width: 100px; height: 30px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">
             </form>`;
 

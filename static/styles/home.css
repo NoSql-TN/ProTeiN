@@ -5,15 +5,15 @@
     align-items: center;
     width: fit-content;
     height: 60px;
-    margin: 20px;
-    border-radius: 20px;
+    margin: 10px;
+    border-radius: 30px;
     background-color: #fff;
 }
 
 .sliders_control {
     position: relative;
     width: 250px;
-    margin: 20px;
+    margin: 10px;
 }
 
 .form_control {
@@ -82,4 +82,64 @@ input[type="range"] {
 #fromSlider {
     height: 0;
     z-index: 1;
+}
+
+
+/* <!--
+            this is a dropdown menu to select the search type between:
+            - Protein entry
+            - Protein name
+            - Protein sequence
+            - Organism
+        --> */
+.search-type {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: fit-content;
+    height: 60px;
+    margin-right: 10px;
+    padding: 5px;
+    border-radius: 30px;
+    background-color: #fff;
+    font-size: 20px;
+    color: #333333;
+    cursor: pointer;
+}
+
+.search-type select:focus {
+    outline: none;
+}
+
+.search-type option {
+    font-size: 20px;
+    color: #1a1a1a;
+    border: none;
+    border-radius: 20px;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+
+.graph {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+    margin-bottom: 40px;
+    margin-left: 4%;
+    margin-right: 5%;
+    padding: 20px;
+    border-radius: 20px;
+    background-color: #fff;
+}
+
+
+.btn-search {
+    background-color: #FAC898;
+}
+
+.btn-annotate {
+    background-color: #FAC898;
 }

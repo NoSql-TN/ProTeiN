@@ -68,3 +68,17 @@ setToggleAccessible(toSlider);
 fromSlider.oninput = () => controlFromSlider(fromSlider, toSlider, fromValue, minweight, maxweight);
 toSlider.oninput = () => controlToSlider(fromSlider, toSlider, toValue, minweight, maxweight);
 
+// when search-type is changed, change the placeholder of the search bar
+const searchType = document.querySelector('#search-type');
+const search = document.querySelector('#search-bar');
+searchType.onchange = () => {
+    if (searchType.value === 'proteinentry') {
+        search.placeholder = 'Enter a protein entry...';
+    }
+    if (searchType.value === 'proteinsequence') {
+        search.placeholder = 'Enter a protein sequence...';
+    }
+    if (searchType.value === 'organism') {
+        search.placeholder = 'Enter an organism...  ';
+    }
+};

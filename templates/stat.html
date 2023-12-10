@@ -2,8 +2,34 @@
 
 {% block content %}
 <link rel="stylesheet" href="../static/styles/home.css">
+<script src="../static/javascript/stat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 <div class="titre-header">
     <h1>ProTeiN</h1>
 </div>
+<div class="container-grid">
+    <div class="row">
+        <div class="graph" style="background-color: #fff;">
+            <canvas id="myChart" width="400" height="400" style="background-color: #fff;"></canvas>
+        </div>
+        <div class="graph">
+            <canvas id="myChart1" width="400" height="400" style="background-color: #fff;"></canvas>
+        </div>
+        <div class="graph">
+            <canvas id="myChart2" width="400" height="400" style="background-color: #fff;"></canvas>
+        </div>
+        <div class="graph">
+            <canvas id="myChart3" width="400" height="400" style="background-color: #fff;"></canvas>
+        </div>
+        <div class="graph">
+            <canvas id="myChart4" width="400" height="400" style="background-color: #fff;"></canvas>
+        </div>
+        <div class="graph">
+            <canvas id="myChart5" width="400" height="400" style="background-color: #fff;"></canvas>
+        </div>
+        <div class="graph" id="tableContainer" width="400" height="400" style="background-color: #fff;">
+        </div>
+    </div>
+
 
 {% endblock %}
