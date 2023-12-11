@@ -13,6 +13,7 @@ def search():
         minweight = request.form["minweight"]
         maxweight = request.form["maxweight"]
         searchType = request.form["searchtype"]
+        print("searchType: ", searchType)
         return render_template("search.html", proteinid=proteinid, minweight=minweight, maxweight=maxweight, maxNeighborDepth=2, numberOfNodes=200, searchType=searchType)
     elif request.method == "GET":
         args = request.args
@@ -38,7 +39,7 @@ def fetch_data(protein_id, min_weight, max_weight, max_neighbor_depth, number_of
     nodes = []
     relationships = []
     
-    print("Number of nodes: ", len(graph.nodes))
+    
 
     
     # Create the data to return
@@ -48,6 +49,7 @@ def fetch_data(protein_id, min_weight, max_weight, max_neighbor_depth, number_of
         if float(rel["jaccardID"]) != 0:
             relationships.append({"source": rel.start_node.id, "target": rel.end_node.id, "label": rel.type, "title": rel["jaccardID"], "value": rel["jaccardID"]})
     
+    print("Number of nodes: ", len(nodes))
     
     stats = neo4j.fetch_stats(protein_id, search_type)
     stats["degree_1"] = 0
@@ -91,6 +93,10 @@ class Neo4j:
             query += f" WHERE p.sequence CONTAINS '{searched_protein_id}'"
         elif search_type == "proteinentry":
             query += f" WHERE p.Proteinid CONTAINS '{searched_protein_id}'"
+        elif search_type == "interpro":
+            query += f" WHERE '{searched_protein_id}' IN p.interPro"
+        elif search_type == "ecnumber":
+            query += f" WHERE '{searched_protein_id}' IN p.EC_number"
         query += " RETURN q.Proteinid, r.jaccardID ORDER BY r.jaccardID DESC LIMIT 1"
         stats["max_weight"] = self._driver.session().run(query).single()
         return stats
@@ -119,6 +125,10 @@ def generate_query(protein_id, min_weight, max_weight, max_neighbor_depth, numbe
         query += f" WHERE p1.sequence CONTAINS '{protein_id}'"
     elif search_type == "proteinentry":
         query += f" WHERE p1.Proteinid CONTAINS '{protein_id}'"
+    elif search_type == "interpro":
+        query += f" WHERE '{protein_id}' IN p1.interPro"
+    elif search_type == "ecnumber":
+        query += f" WHERE '{protein_id}' IN p1.EC_number"
     query += f" AND r.jaccardID >= {min_weight}"
     query += f" AND r.jaccardID <= {max_weight}"
     for i in range(1, int(max_neighbor_depth)):
@@ -134,5 +144,6 @@ def generate_query(protein_id, min_weight, max_weight, max_neighbor_depth, numbe
     for i in range(1, int(max_neighbor_depth)):
         query += f", r{i}.jaccardID DESC"   
     query += f" LIMIT {number_of_nodes}"
+    print(query)
         
     return query
