@@ -223,14 +223,14 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     //[{'p.Proteinid': 'P36406', 'nombreRelations': 4256}, {'p.Proteinid': 'O60229', 'nombreRelations': 4206}, {'p.Proteinid': 'O75962', 'nombreRelations': 4196}, {'p.Proteinid': 'P08581', 'nombreRelations': 3714}, {'p.Proteinid': 'P04629', 'nombreRelations': 3562}, {'p.Proteinid': 'O15197', 'nombreRelations': 3528}, {'p.Proteinid': 'P29320', 'nombreRelations': 3528}, {'p.Proteinid': 'P29323', 'nombreRelations': 3528}, {'p.Proteinid': 'P21709', 'nombreRelations': 3528}, {'p.Proteinid': 'P29317', 'nombreRelations': 3526}]
     //create the bar chart
-    const graph4 = fetch('/relations')
+    const graph4 = fetch('/interprofreq')
         .then(response => response.json())
         .then(json => {
             var labels = [];
             var data = [];
             for (var i = 0; i < json.length; i++) {
-                labels.push(json[i]['p.Proteinid']);
-                data.push(json[i]['nombreRelations']);
+                labels.push(json[i]['interProElement']);
+                data.push(json[i]['frequency']);
             }
 
             var myChart = new Chart(canvas4, {
@@ -322,6 +322,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 fetch('/human')
     .then(response => response.json())
     .then(json => {
+        console.log(json)
         const table = document.createElement('table');
         table.classList.add('table');
 
@@ -330,7 +331,16 @@ fetch('/human')
         const headerRow = document.createElement('tr');
         const headers = Object.keys(json[0]);
 
-        headers.forEach(header => {
+        for (let i = 0; i < headers.length; i++){
+            let header = headers[headers.length - i -1];
+            const th = document.createElement('th');
+            th.textContent = header;
+            headerRow.appendChild(th);
+        }
+
+        const headers2 = Object.keys(json[1]);
+
+        headers2.forEach(header => {
             const th = document.createElement('th');
             th.textContent = header;
             headerRow.appendChild(th);
@@ -342,17 +352,28 @@ fetch('/human')
         // Create table body
         const tbody = document.createElement('tbody');
 
-        json.forEach(row => {
-            const tr = document.createElement('tr');
+        let i = 0;
+        while (i < json.length) {
+            const row = document.createElement('tr');
+            const values = Object.values(json[i]);
+            const values2 = Object.values(json[i+1]);
 
-            Object.values(row).forEach(value => {
+            for (let i = 0; i < values.length; i++){
+                let value = values[values.length - i -1];
                 const td = document.createElement('td');
                 td.textContent = value;
-                tr.appendChild(td);
+                row.appendChild(td);
+            }
+            
+            values2.forEach(value => {
+                const td = document.createElement('td');
+                td.textContent = value;
+                row.appendChild(td);
             });
 
-            tbody.appendChild(tr);
-        });
+            tbody.appendChild(row);
+            i += 2;
+        }
 
         table.appendChild(tbody);
 

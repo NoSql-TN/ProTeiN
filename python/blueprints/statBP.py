@@ -46,7 +46,7 @@ def get_interpro():
 @statBP.route("/interprofreq")
 def get_interprofreq():
     res = use_neo4j(list_of_queries[6])
-    res = jsonify(res[0])
+    res = jsonify(res[0][1:])
     #print(res)
     #return in the json format the result of the query
     return res
@@ -71,20 +71,7 @@ def get_human():
     res7 = use_neo4j(list_of_queries[16])
     res8 = use_neo4j(list_of_queries[17])
     res9 = use_neo4j(list_of_queries[18])
-    list=[]
-    mergeddict={}
-    mergeddict.update(res[0][0])
-    mergeddict.update(res1[0][0])
-    mergeddict.update(res2[0][0])
-    mergeddict.update(res3[0][0])
-    mergeddict.update(res4[0][0])
-    mergeddict.update(res5[0][0])
-    mergeddict.update(res6[0][0])
-    mergeddict.update(res7[0][0])
-    mergeddict.update(res8[0][0])
-    mergeddict.update(res9[0][0])
-    print(mergeddict)
-    list.append(mergeddict)
+    list=[res[0][1],res1[0][0],res2[0][1],res3[0][0],res4[0][1],res5[0][0],res6[0][1],res7[0][0],res8[0][1],res9[0][0]]
     res = jsonify(list)
     print("trongol")
     print(res)
