@@ -53,3 +53,4 @@ finalized_model.sav
 gpt-model/
 
 uniprotkb_AND_reviewed_true_2023_12_05.tsv
+*.tsv
