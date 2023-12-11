@@ -17,6 +17,9 @@ def create_app() -> Flask:
     from python.blueprints.statBP import statBP
     app.register_blueprint(statBP)
     
+    from python.blueprints.annotateBP import annotateBP
+    app.register_blueprint(annotateBP)
+    
     @app.route('/favicon.ico')
     def favicon():
         return send_from_directory(os.path.join(app.root_path, 'static'),
