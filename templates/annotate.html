@@ -13,15 +13,39 @@
                     <div class="result">
                         <h1 class="result-title">{{proteinid}}</h1>
                         <div class="list-group">
-                            <h2 class="list-group-item">Annotations possibles: </h2>
-                                {% for i in stats %}
-                                    <a  class="list-group-item list-group-item-action">
-                                        <div class="d-flex w-100 justify-content-between">
-                                            <h5 class="mb-1">{{ i }}:</h5>
-                                            <small class="text-score">{{ stats[i] }} %</small>
-                                        </div>
-                                    </a>
-                                {% endfor %}
+                            <h2 class="list-group-item">Annotations par propagation: </h2>
+                            <a  class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">Protein ID</h5>
+                                    <small>Probabilité</small>
+                                </div>
+                            </a>
+                            {% for i in ec_numbers %}
+                                <a  class="list-group-item list-group-item-action">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">{{ i }}:</h5>
+                                        <small class="text-score">{{ ec_numbers[i] * 100 }} %</small>
+                                    </div>
+                                </a>
+                            {% endfor %}
+                        </div>
+                        <div style="height: 30px;"></div>
+                        <div class="list-group">
+                            <h2 class="list-group-item">Annotations par réseaux de neurones: </h2>
+                            <a  class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">Protein ID:</h5>
+                                    <small>Probabilité</small>
+                                </div>
+                            </a>
+                            {% for i in stats %}
+                                <a  class="list-group-item list-group-item-action">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">{{ i }}:</h5>
+                                        <small class="text-score">{{ stats[i] }} %</small>
+                                    </div>
+                                </a>
+                            {% endfor %}
                         </div>
                         <div class="button-container">
                             <a href="/home"

@@ -1,5 +1,9 @@
 from flask import Blueprint,session,redirect,request,flash
 from flask.templating import render_template
+from neo4j import GraphDatabase
+import pandas as pd
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
 
 from tensorflow.keras.models import load_model
 
@@ -29,12 +33,60 @@ def home():
             return render_template("home.html")
         
         stats = model_stats(sequence, threshold)
+        ec_numbers = get_ec_numbers(proteinid)
+        for ec_number in list(ec_numbers):
+            if ec_numbers[ec_number] < float(threshold):
+                del ec_numbers[ec_number]
+                
+        print(ec_numbers)
         
-        return render_template("annotate.html", stats=stats,proteinid=proteinid)
+        return render_template("annotate.html", stats=stats,proteinid=proteinid, ec_numbers=ec_numbers)
     else:
         return render_template("annotate.html", stats=stats,proteinid="")
         
         
+
+class Neo4j:
+    def __init__(self, uri, user, password):
+        self._driver = GraphDatabase.driver(uri, auth=(user, password))
+
+    def close(self):
+        self._driver.close()
+
+    def get_closest_protein(self, protein_id, nbr_proteins):
+        query = f"MATCH (p:Protein)-[r:similarity]->(q:Protein) WHERE p.Proteinid = '{protein_id}' RETURN q.Proteinid, r.jaccardID ORDER BY r.jaccardID DESC LIMIT {nbr_proteins}"
+        with self._driver.session() as session:
+            result = session.run(query)
+            return result.data()
+        
+def get_ec_numbers(protein_id):
+    
+    uri = "mongodb+srv://remibourdais:d2pt90JS6L9VRODO@clustertest.fu6wceb.mongodb.net/?retryWrites=true&w=majority"
+    client = MongoClient(uri, server_api=ServerApi('1'))
+    
+    neo4j = Neo4j("bolt://localhost:7687", "neo4j", "remiremiremi2001")
+    data = neo4j.get_closest_protein(protein_id, 20)
+    neo4j.close()
+    
+    number_of_neighbors = len(data)
+    probability_ec_numbers = {}
+    for neighbor in data:
+        neighbor_id = neighbor["q.Proteinid"]
+        neighbor_jaccard = neighbor["r.jaccardID"]
+        neighbor_ec_numbers = client["ClusterTest"]["protein"].find({"Entry": neighbor_id}, {"EC number": 1, "_id": 0})[0]["EC number"]
+        for ec_number in neighbor_ec_numbers.split(";"):
+            ec_number = ec_number.strip()
+            if ec_number not in probability_ec_numbers:
+                probability_ec_numbers[ec_number] = 0
+            probability_ec_numbers[ec_number] += neighbor_jaccard / number_of_neighbors
+    for ec_number in probability_ec_numbers:
+        probability_ec_numbers[ec_number] = round(probability_ec_numbers[ec_number], 2)
+        if probability_ec_numbers[ec_number] > 1:
+            probability_ec_numbers[ec_number] = 1
+    
+    client.close()
+
+    return probability_ec_numbers
 
 def file_loader(file):
     data = []
