@@ -36,9 +36,6 @@ csv/prediction.csv
 static/data.json
 output.txt
 
-# Ignore all model files
-models/
-
 ```
 # pycache
 __pycache__/
