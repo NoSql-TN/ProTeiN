@@ -31,15 +31,29 @@ document.addEventListener("DOMContentLoaded", function (event) {
                             categoryPercentage: 0.8, // Adjust the space between the bars
                             ticks: {
                                 padding: 5 // Update the padding value for left and right margins
+                            },
+                            gridLines: {
+                                display: false // Hide the x-axis grid lines
                             }
                         }],
                         yAxes: [{
                             ticks: {
                                 beginAtZero: true,
-                                stepSize: 1,
+                                stepSize: 200,
                                 padding: 10 // Add space at the bottom
+                            },
+                            gridLines: {
+                                color: 'rgba(0, 0, 0, 0.1)' // Customize the y-axis grid lines color
                             }
                         }]
+                    },
+                    legend: {
+                        display: false // Hide the legend
+                    },
+                    title: {
+                        display: true,
+                        text: 'Number of Relations of the 10 Most Related Proteins', // Add your desired title here
+                        fontSize: 16 // Customize the title font size
                     }
                 }
             });
@@ -95,20 +109,25 @@ document.addEventListener("DOMContentLoaded", function (event) {
                     maintainAspectRatio: false, // Disable aspect ratio
                     title: {
                         display: true,
-                        text: 'Number of Relations by Jaccard Range' // Add your desired title here
+                        text: 'Number of Relations by Jaccard Range', // Add your desired title here
+                        fontSize: 16 // Customize the title font size
                     },
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero: true,
-                                stepSize: 1
-                            }
-                        }]
+                    legend: {
+                        position: 'bottom', // Change the position of the legend
+                        labels: {
+                            fontColor: 'black', // Customize the legend font color
+                            fontSize: 12 // Customize the legend font size
+                        }
+                    },
+                    tooltips: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)', // Customize the tooltip background color
+                        titleFontColor: 'white', // Customize the tooltip title font color
+                        bodyFontColor: 'white' // Customize the tooltip body font color
                     }
                 }
             });
         });
-    
+
     var canvas2 = document.getElementById('myChart2').getContext('2d');
 
     // [{'jaccardRange': '0.0-0.1', 'nodeCount': 623}, {'jaccardRange': '0.1-0.2', 'nodeCount': 4127}, {'jaccardRange': '0.2-0.3', 'nodeCount': 3102}, {'jaccardRange': '0.3-0.4', 'nodeCount': 2793}, {'jaccardRange': '0.4-0.5', 'nodeCount': 1870}, {'jaccardRange': '0.5-0.6', 'nodeCount': 1433}, {'jaccardRange': '0.6-0.7', 'nodeCount': 1033}, {'jaccardRange': '0.7-0.8', 'nodeCount': 930}, {'jaccardRange': '0.8-0.9', 'nodeCount': 315}, {'jaccardRange': '0.9-1.0', 'nodeCount': 1622}]
@@ -163,6 +182,18 @@ document.addEventListener("DOMContentLoaded", function (event) {
                         display: true,
                         text:'Average relations for all proteins' // Add your desired title here
                     },
+                    legend: {
+                        position: 'bottom', // Change the position of the legend
+                        labels: {
+                            fontColor: 'black', // Customize the legend font color
+                            fontSize: 12 // Customize the legend font size
+                        }
+                    },
+                    tooltips: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)', // Customize the tooltip background color
+                        titleFontColor: 'white', // Customize the tooltip title font color
+                        bodyFontColor: 'white' // Customize the tooltip body font color
+                    },
                     scales: {
                         yAxes: [{
                             ticks: {
@@ -211,12 +242,23 @@ document.addEventListener("DOMContentLoaded", function (event) {
                         yAxes: [{
                             ticks: {
                                 beginAtZero: true,
-                                stepSize: 1
+                                stepSize: 800,
                             }
                         }]
-                    }
+                    },
+                    legend: {
+                        position: 'bottom', // Change the position of the legend
+                        labels: {
+                            fontColor: 'black', // Customize the legend font color
+                            fontSize: 12 // Customize the legend font size
+                        }
+                    },
                 }
             });
+
+            // Add style to graph 3
+            myChart.datasets[0].backgroundColor = 'rgba(54, 162, 235, 0.2)';
+            myChart.datasets[0].borderColor = 'rgba(54, 162, 235, 1)';
         });
 
     var canvas4 = document.getElementById('myChart4').getContext('2d');
@@ -258,10 +300,18 @@ document.addEventListener("DOMContentLoaded", function (event) {
                         yAxes: [{
                             ticks: {
                                 beginAtZero: true,
-                                stepSize: 1,
+                                stepSize: 500,
                                 padding: 10 // Add space at the bottom
                             }
                         }]
+                    },
+                    legend: {
+                        display: false // Hide the legend
+                    },
+                    title: {
+                        display: true,
+                        text: 'Number of most frequent domains in the interpro list', // Add your desired title here
+                        fontSize: 16 // Customize the title font size
                     }
                 }
             });
@@ -306,10 +356,18 @@ document.addEventListener("DOMContentLoaded", function (event) {
                         yAxes: [{
                             ticks: {
                                 beginAtZero: true,
-                                stepSize: 1,
+                                stepSize: 40,
                                 padding: 10 // Add space at the bottom
                             }
                         }]
+                    },
+                    legend: {
+                        display: false // Hide the legend
+                    },
+                    title: {
+                        display: true,
+                        text: 'Number of most frequent EC numbers', // Add your desired title here  
+                        fontSize: 16 // Customize the title font size
                     }
                 }
             });
@@ -318,68 +376,72 @@ document.addEventListener("DOMContentLoaded", function (event) {
     
     //[{'organism': 'Homo sapiens (Human)', 'interProElement': '', 'frequency': 19676}, {'ecNumber': '2.7.11.1', 'freq': 222}] 
     const tableContainer = document.getElementById('tableContainer');
+    
+    const title = document.createElement('h2');
+    title.innerText="InterPro et EC number les plus fréquent par organisme"
+    title.style.fontWeight = 'bold'; // Add font weight style
+    title.style.paddingBottom = '20px';
+    tableContainer.appendChild(title);
 
-fetch('/human')
-    .then(response => response.json())
-    .then(json => {
-        console.log(json)
-        const table = document.createElement('table');
-        table.classList.add('table');
+    fetch('/human').then(response => response.json())
+        .then(json => {
+            console.log(json)
+            const table = document.createElement('table');
+            table.classList.add('table');
+            table.style.borderCollapse = 'collapse'; // Add border collapse style
 
-        // Create table header
-        const thead = document.createElement('thead');
-        const headerRow = document.createElement('tr');
-        const headers = Object.keys(json[0]);
+            // Create table header
+            const thead = document.createElement('thead');
+            const headerRow = document.createElement('tr');
+            const headers = ["Organism","Interpro Element","Fréquence", "EC Number", "Fréquence"]
 
-        for (let i = 0; i < headers.length; i++){
-            let header = headers[headers.length - i -1];
-            const th = document.createElement('th');
-            th.textContent = header;
-            headerRow.appendChild(th);
-        }
-
-        const headers2 = Object.keys(json[1]);
-
-        headers2.forEach(header => {
-            const th = document.createElement('th');
-            th.textContent = header;
-            headerRow.appendChild(th);
-        });
-
-        thead.appendChild(headerRow);
-        table.appendChild(thead);
-
-        // Create table body
-        const tbody = document.createElement('tbody');
-
-        let i = 0;
-        while (i < json.length) {
-            const row = document.createElement('tr');
-            const values = Object.values(json[i]);
-            const values2 = Object.values(json[i+1]);
-
-            for (let i = 0; i < values.length; i++){
-                let value = values[values.length - i -1];
-                const td = document.createElement('td');
-                td.textContent = value;
-                row.appendChild(td);
+            for (let i = 0; i < headers.length; i++){
+                let header = headers[i];
+                const th = document.createElement('th');
+                th.textContent = header;
+                th.style.border = '1px solid black'; // Add border style
+                th.style.padding = '8px'; // Add padding style
+                headerRow.appendChild(th);
             }
-            
-            values2.forEach(value => {
-                const td = document.createElement('td');
-                td.textContent = value;
-                row.appendChild(td);
-            });
 
-            tbody.appendChild(row);
-            i += 2;
-        }
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
 
-        table.appendChild(tbody);
+            // Create table body
+            const tbody = document.createElement('tbody');
 
-        // Append table to the container
-        tableContainer.appendChild(table);
-    });
+            let i = 0;
+            while (i < json.length) {
+                const row = document.createElement('tr');
+                const values = Object.values(json[i]);
+                const values2 = Object.values(json[i+1]);
+
+                for (let i = 0; i < values.length; i++){
+                    let value = values[values.length - i -1];
+                    const td = document.createElement('td');
+                    td.textContent = value;
+                    td.style.border = '1px solid black'; // Add border style
+                    td.style.padding = '8px'; // Add padding style
+                    row.appendChild(td);
+                }
+                
+                values2.forEach(value => {
+                    const td = document.createElement('td');
+                    td.textContent = value;
+                    td.style.border = '1px solid black'; // Add border style
+                    td.style.padding = '8px'; // Add padding style
+                    row.appendChild(td);
+                });
+
+                tbody.appendChild(row);
+                i += 2;
+            }
+
+            table.appendChild(tbody);
+
+            // Append table to the container
+            tableContainer.appendChild(table);
+        });
     
 });
 
