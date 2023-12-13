@@ -7,133 +7,14 @@
 <script src="../static/javascript/search_graph.js"></script>
 <script>
     function draw(){
+        // pass those parameters to the function minweight,maxweight,numberOfNodes,maxNeighborDepth,proteinid,searchType
+        create_bottom_container("{{minweight}}", "{{maxweight}}", "{{numberOfNodes}}","{{maxNeighborDepth}}", "{{proteinid}}", "{{searchType}}");
         fetchDataAndDraw("{{proteinid}}", "{{minweight}}", "{{maxweight}}","{{maxNeighborDepth}}", "{{numberOfNodes}}", "{{searchType}}");
     }
-
-    function createSliders() {
-
-        const sliders = document.createElement("div");
-        sliders.setAttribute(
-            "style",
-            "background-color: white; border-radius: 5px; border: 1px solid black; z-index: 99999999999999999999999; padding: 5px; width: auto; height: auto; display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start;"
-        );
-        sliders.innerHTML = `<h3>Weights :</h3>
-            <form action="/search" method="get" style="display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start;">
-                <input style="display: none; width: 0; height: 0;" type="text" name="minWeight" id="minWeight" value="{{minweight}}">
-                <input style="display: none; width: 0; height: 0;" type="text" name="maxWeight" id="maxWeight" value="{{maxweight}}">
-                <div class="range_container">
-                    <div class="sliders_control">
-                        <input id="fromSlider" type="range" value="{{minweight}}" min="0" max="1" step="0.01" />
-                        <input id="toSlider" type="range" value="{{maxweight}}" min="0" max="1" step="0.01"/>
-                    </div>
-                    <div class="sliders_values">
-                        <p>Weight Value: <span id="fromValue">{{minweight}}</span> - <span id="toValue">{{maxweight}}</span></p>
-                    </div>
-                </div>
-                <p><strong>Number of nodes</strong>: <span id="numberOfNodesValue">{{numberOfNodes}}</span></p>
-                <input type="range" min="10" max="500" value="{{numberOfNodes}}" step="10" id="numberOfNodesSlider" style="margin-bottom: 15px;" name="numberOfNodes">
-                <p style="padding-top: 5px;"><strong>Max neighbor depth</strong>: <span id="maxNeighborDepthValue">{{maxNeighborDepth}}</span></p>
-                <input type="range" min="0" max="2" value="{{maxNeighborDepth}}" step="1" id="maxNeighborDepthSlider" style="margin-bottom: 15px;" name="maxNeighborDepth">
-                <input type="hidden" name="proteinId" value="{{proteinid}}">
-                <input type="hidden" name="searchType" value="{{searchType}}">
-                <input type="submit" value="Search" style="margin: auto; margin-bottom: 15px; width: 100px; height: 30px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">
-            </form>`;
-
-        const numberOfNodesSlider = sliders.querySelector("#numberOfNodesSlider");
-        const numberOfNodesValue = sliders.querySelector("#numberOfNodesValue");
-        numberOfNodesSlider.addEventListener("input", () => {
-            numberOfNodesValue.textContent = numberOfNodesSlider.value;
-        });
-
-        const maxNeighborDepthSlider = sliders.querySelector("#maxNeighborDepthSlider");
-        const maxNeighborDepthValue = sliders.querySelector("#maxNeighborDepthValue");
-        maxNeighborDepthSlider.addEventListener("input", () => {
-            maxNeighborDepthValue.textContent = maxNeighborDepthSlider.value;
-        });
-
-        return sliders;
-    }
-
-
-    function controlFromSlider(fromSlider, toSlider, fromValue, minweight, maxweight) {
-        const [from, to] = getParsed(fromSlider, toSlider);
-        fillSlider(fromSlider, toSlider, '#FFA500', '#0000FF', toSlider);
-        if (from > to) {
-            fromSlider.value = to;
-            fromValue.innerHTML = to;
-            minweight.value = to;
-        } else {
-            minweight.value = from;
-            fromValue.innerHTML = from;
-            fromSlider.value = from;
-        }
-    }
-
-    function controlToSlider(fromSlider, toSlider, toValue, minweight, maxweight) {
-        const [from, to] = getParsed(fromSlider, toSlider);
-        fillSlider(fromSlider, toSlider, '#FFA500', '#0000FF', toSlider);
-        setToggleAccessible(toSlider);
-        if (from <= to) {
-            toSlider.value = to;
-            toValue.innerHTML = to;
-            maxweight.value = to;
-        } else {
-            toValue.innerHTML = from;
-            toSlider.value = from;
-            maxweight.value = from;
-        }
-    }
-
-    function getParsed(currentFrom, currentTo) {
-        const from = parseFloat(currentFrom.value);
-        const to = parseFloat(currentTo.value);
-        return [from, to];
-    }
-
-    function fillSlider(from, to, sliderColor, rangeColor, controlSlider) {
-        const rangeDistance = to.max - to.min;
-        const fromPosition = from.value - to.min;
-        const toPosition = to.value - to.min;
-        controlSlider.style.background = `linear-gradient(
-        to right,
-        ${sliderColor} 0%,
-        ${sliderColor} ${(fromPosition) / (rangeDistance) * 100}%,
-        ${rangeColor} ${((fromPosition) / (rangeDistance)) * 100}%,
-        ${rangeColor} ${(toPosition) / (rangeDistance) * 100}%, 
-        ${sliderColor} ${(toPosition) / (rangeDistance) * 100}%, 
-        ${sliderColor} 100%)`;
-    }
-
-    function setToggleAccessible(currentTarget) {
-        const toSlider = document.querySelector('#toSlider');
-        if (Number(currentTarget.value) <= 0) {
-            toSlider.style.zIndex = 2;
-        } else {
-            toSlider.style.zIndex = 0;
-        }
-    }
-
-
-    // create the bottom div that contains the sliders
-	bottomContainer = document.createElement("div");
-	bottomContainer.setAttribute("id", "bottomContainer");
-	bottomContainer.setAttribute("style", "position: absolute; bottom: 10px; left: 10px;");
-	bottomContainer.appendChild(createSliders());
-	document.body.appendChild(bottomContainer);
-
-    const fromSlider = document.querySelector('#fromSlider');
-    const toSlider = document.querySelector('#toSlider');
-    const fromValue = document.querySelector('#fromValue');
-    const toValue = document.querySelector('#toValue');
-    const minweight = document.querySelector('#minWeight');
-    const maxweight = document.querySelector('#maxWeight');
-    fillSlider(fromSlider, toSlider, '#FFA500', '#0000FF', toSlider);
-    setToggleAccessible(toSlider);
-    fromSlider.oninput = () => controlFromSlider(fromSlider, toSlider, fromValue, minweight, maxweight);
-    toSlider.oninput = () => controlToSlider(fromSlider, toSlider, toValue, minweight, maxweight);
 
 </script>
 
 <body onload="draw()">
+    <div id="graph"></div>
 </body>
 {% endblock %}
